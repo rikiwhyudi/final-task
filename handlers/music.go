@@ -65,16 +65,19 @@ func (h *handlerMusic) CreateMusic(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	dataContex := r.Context().Value("dataFile")
+	dataMusicContext := r.Context().Value("dataMusic")
+
 	filepath := dataContex.(string)
+	musicFile := dataMusicContext.(string)
 
 	year, _ := strconv.Atoi(r.FormValue("year"))
-	id, _ := strconv.Atoi(r.FormValue("singer_id"))
+	singer_id, _ := strconv.Atoi(r.FormValue("singer_id"))
 	request := musicdto.MusicRequest{
 		Title:     r.FormValue("title"),
 		Year:      year,
 		Thumbnail: filepath,
-		SingerID:  id,
-		MusicFile: r.FormValue("music_file"),
+		SingerID:  singer_id,
+		MusicFile: musicFile,
 	}
 
 	validation := validator.New()
@@ -101,15 +104,20 @@ func (h *handlerMusic) CreateMusic(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 	}
 
+	respMusic, err := cld.Upload.Upload(ctx, musicFile, uploader.UploadParams{Folder: "waysbuck"})
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
 	music := models.Music{
 		Title:     request.Title,
 		Year:      request.Year,
 		Thumbnail: resp.SecureURL,
 		SingerID:  request.SingerID,
-		MusicFile: request.MusicFile,
+		MusicFile: respMusic.SecureURL,
 	}
 
-	// err := mysql.DB.Create(&product).Error
 	dataMusic, err := h.MusicRepository.CreateMusic(music)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -137,7 +145,7 @@ func (h *handlerMusic) UpdateMusic(w http.ResponseWriter, r *http.Request) {
 		Title:     r.FormValue("title"),
 		Year:      year,
 		Thumbnail: filepath,
-		MusicFile: r.FormValue("music_file"),
+		MusicFile: filepath,
 	}
 
 	validation := validator.New()

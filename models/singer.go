@@ -6,5 +6,5 @@ type Singer struct {
 	Old         int    `json:"old" form:"old" gorm:"type: varchar(255)"`
 	Category    string `json:"category" form:"category" gorm:"type: varchar(255)"`
 	StartCareer int    `json:"start_career" form:"start_career" gorm:"type: varchar(255)"`
-	Thumbnail   string `json:"thumbnail" form:"thumbnail" gorm:"type: varchar(50)"`
+	Thumbnail   string `json:"thumbnail" form:"thumbnail" gorm:"type: varchar(255)"`
 }

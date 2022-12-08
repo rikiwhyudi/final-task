@@ -109,7 +109,6 @@ func (h *handlerSinger) CreateSinger(w http.ResponseWriter, r *http.Request) {
 		Thumbnail:   resp.SecureURL,
 	}
 
-	// err := mysql.DB.Create(&product).Error
 	dataSinger, err := h.SingerRepository.CreateSinger(singer)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

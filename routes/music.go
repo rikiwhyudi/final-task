@@ -15,7 +15,7 @@ func MusicRoutes(r *mux.Router) {
 
 	r.HandleFunc("/musics", h.FindMusics).Methods("GET")
 	r.HandleFunc("/music/{id}", middleware.Auth(h.GetMusic)).Methods("GET")
-	r.HandleFunc("/music", middleware.Auth(middleware.UploadFile(h.CreateMusic))).Methods("POST")
+	r.HandleFunc("/music", middleware.Auth(middleware.UploadFile(middleware.UploadMusic(h.CreateMusic)))).Methods("POST")
 	r.HandleFunc("/music/{id}", middleware.Auth(middleware.UploadFile(h.UpdateMusic))).Methods("PATCH")
 	r.HandleFunc("/music/{id}", middleware.Auth(h.DeleteMusic)).Methods("DELETE")
 }

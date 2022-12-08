@@ -120,7 +120,7 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	loginResponse := authdto.LoginResponse{
-		Id:     user.ID,
+		// Id:     user.ID,
 		Name:   user.Name,
 		Email:  user.Email,
 		Token:  token,

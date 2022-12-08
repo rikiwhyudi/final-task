@@ -137,15 +137,20 @@ func (h *handlerMusic) UpdateMusic(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	dataContex := r.Context().Value("dataFile")
+	dataMusicContext := r.Context().Value("dataMusic")
+
 	filepath := dataContex.(string)
+	musicFile := dataMusicContext.(string)
 
 	year, _ := strconv.Atoi(r.FormValue("year"))
+	singer_id, _ := strconv.Atoi(r.FormValue("singer_id"))
 
 	request := musicdto.MusicRequest{
 		Title:     r.FormValue("title"),
 		Year:      year,
+		SingerID:  singer_id,
 		Thumbnail: filepath,
-		MusicFile: filepath,
+		MusicFile: musicFile,
 	}
 
 	validation := validator.New()
@@ -172,14 +177,23 @@ func (h *handlerMusic) UpdateMusic(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 	}
 
+	respMusic, err := cld.Upload.Upload(ctx, musicFile, uploader.UploadParams{Folder: "waysbuck"})
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+
 	music, _ := h.MusicRepository.GetMusic(id)
+	music.SingerID = singer_id
 	music.Title = request.Title
 	music.Year = request.Year
-	music.Thumbnail = resp.SecureURL
+	music.Thumbnail = respMusic.SecureURL
 
-	if filepath != "false" {
+	if filepath != "false" && musicFile != "false" {
 		music.Thumbnail = resp.SecureURL
+		music.MusicFile = respMusic.SecureURL
 	}
 
 	music, err = h.MusicRepository.UpdateMusic(music)

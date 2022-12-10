@@ -3,6 +3,7 @@ package routes
 import (
 	"BackEnd/handlers"
 	"BackEnd/pkg/connection"
+	"BackEnd/pkg/middleware"
 	"BackEnd/repositories"
 
 	"github.com/gorilla/mux"
@@ -14,6 +15,6 @@ func UserRoutes(r *mux.Router) {
 
 	r.HandleFunc("/users", h.FindUsers).Methods("GET")
 	r.HandleFunc("/user/{id}", h.GetUser).Methods("GET")
-	r.HandleFunc("/user/{id}", h.UpdateUser).Methods("PATCH")
+	r.HandleFunc("/user", middleware.Auth(middleware.UploadFile(h.UpdateUser))).Methods("PATCH")
 	r.HandleFunc("/user/{id}", h.DeleteUser).Methods("DELETE")
 }

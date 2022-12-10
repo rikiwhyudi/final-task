@@ -10,9 +10,9 @@ import (
 func RunMigration() {
 	err := connection.DB.AutoMigrate(
 		&models.User{},
-		&models.Profile{},
 		&models.Music{},
 		&models.Singer{},
+		&models.Transaction{},
 	)
 
 	if err != nil {
